@@ -5,17 +5,23 @@
 
 ## BagoShop
 
-1. Levantar la Base de datos
+1. Clonar Proyecto
+2. ``npm install``
+3. Clonar el archivo ```.env.template``` y renombrarlo a ```.env```
+4. Cambiar las variables de entorno
+
+
+5. Levantar la Base de datos
 ```
 docker-compose up -d
 ```
 
-2. Instalar modulos
+6. Instalar modulos
 ```bash
 $ npm install
 ```
 
-3. Arrancar el proyecto
+7. Arrancar el proyecto
 
 ```bash
 # development
