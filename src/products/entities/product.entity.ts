@@ -13,6 +13,7 @@ export class Product {
   //otra forma de especificar el tipo con type y usando un solo objeto
   @Column({
     type: 'float',
+    default: 0,
   })
   price: number;
 
