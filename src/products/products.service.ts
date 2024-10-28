@@ -13,7 +13,12 @@ export class ProductsService {
   ) {}
 
   async create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+    try {
+      const product = this.productRepository.create(createProductDto);
+      await this.productRepository.save(product);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   findAll() {
