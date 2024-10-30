@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,8 +16,11 @@ export class ProductsService {
     try {
       const product = this.productRepository.create(createProductDto);
       await this.productRepository.save(product);
+
+      return product;
     } catch (error) {
       console.log(error);
+      throw new InternalServerErrorException('Error creating product');
     }
   }
 
