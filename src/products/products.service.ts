@@ -26,11 +26,7 @@ export class ProductsService {
 
       return product;
     } catch (error) {
-      if (error.code === '23505'){
-        throw new BadRequestException(error.detail)
-      }
-      this.logger.error(error);
-      throw new InternalServerErrorException('Unexpected error, check server logs');
+      this.handleDBException(error);
     }
   }
 
@@ -48,5 +44,15 @@ export class ProductsService {
 
   remove(id: number) {
     return `This action removes a #${id} product`;
+  }
+
+  private handleDBException(error: any) {
+    if (error.code === '23505') {
+      throw new BadRequestException(error.detail);
+    }
+    this.logger.error(error);
+    throw new InternalServerErrorException(
+      'Unexpected error, check server logs',
+    );
   }
 }
