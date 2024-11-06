@@ -35,7 +35,11 @@ export class ProductsService {
   // TODO: Paginar
   async findAll(paginationDto: PaginationDto) {
     try {
-      const products = await this.productRepository.find();
+      const { limit = 10, offset = 0 } = paginationDto;
+      const products = await this.productRepository.find({
+        take:limit,
+        skip:offset,
+      });
       return products;
     } catch (error) {
       this.handleDBException(error);
