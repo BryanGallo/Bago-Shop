@@ -11,6 +11,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { validate as isUUID } from 'uuid';
 
 @Injectable()
 export class ProductsService {
@@ -37,8 +38,8 @@ export class ProductsService {
     try {
       const { limit = 10, offset = 0 } = paginationDto;
       const products = await this.productRepository.find({
-        take:limit,
-        skip:offset,
+        take: limit,
+        skip: offset,
       });
       return products;
     } catch (error) {
@@ -46,11 +47,16 @@ export class ProductsService {
     }
   }
 
-  async findOne(id: string) {
-    const product = await this.productRepository.findOneBy({ id });
+  async findOne(term: string) {
+    let product: Product;
+    if (isUUID(term)) {
+      product = await this.productRepository.findOneBy({ id: term });
+    } else {
+      product = await this.productRepository.findOneBy({ slug: term });
+    }
     if (!product) {
       throw new NotFoundException(
-        `El producto con el siguiente id: ${id} no existe `,
+        `El producto con el siguiente termino: ${term} no existe `,
       );
     }
     return product;
