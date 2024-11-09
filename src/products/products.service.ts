@@ -52,7 +52,14 @@ export class ProductsService {
     if (isUUID(term)) {
       product = await this.productRepository.findOneBy({ id: term });
     } else {
-      product = await this.productRepository.findOneBy({ slug: term });
+      const queryBuilder = this.productRepository.createQueryBuilder();
+      product = await queryBuilder
+        //? los ':' del primer parametro del where deben estar junto al parametro no se puede colocar : parametro
+        .where(`title = :title or slug = :slug`, {
+          title: term,
+          slug: term,
+        })
+        .getOne();
     }
     if (!product) {
       throw new NotFoundException(
