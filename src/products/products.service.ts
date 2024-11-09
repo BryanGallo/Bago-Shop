@@ -55,9 +55,9 @@ export class ProductsService {
       const queryBuilder = this.productRepository.createQueryBuilder();
       product = await queryBuilder
         //? los ':' del primer parametro del where deben estar junto al parametro no se puede colocar : parametro
-        .where(`title = :title or slug = :slug`, {
-          title: term,
-          slug: term,
+        .where(`UPPER(title) = :title or slug = :slug`, {
+          title: term.toUpperCase(),
+          slug: term.toLocaleLowerCase(),
         })
         .getOne();
     }
