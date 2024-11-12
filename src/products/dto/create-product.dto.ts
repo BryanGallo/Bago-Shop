@@ -40,4 +40,9 @@ export class CreateProductDto {
     message: 'No es un genero valido',
   }) //indica que debe estar dentro de cualquier valor del arreglo o no puede ingresar
   gender?: string;
+
+  @IsString({ each: true })
+  @IsArray()
+  @IsOptional()
+  tags?: string[];
 }
