@@ -84,6 +84,7 @@ export class ProductsService {
     const product = await this.productRepository.preload({
       id,
       ...updateProductDto,
+      images: [],
     });
     if (!product) {
       throw new NotFoundException(
