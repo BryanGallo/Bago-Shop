@@ -60,6 +60,7 @@ export class Product {
 
   @OneToMany(() => ProductImage, (productImage) => productImage.product, {
     cascade: true,
+    eager: true, //los find funcionan con los eager de relaciones y cada ves que usemos un metodo find cargara automaticamente las imagenes ya que lo colocamos en true
   })
   images?: ProductImage[];
 

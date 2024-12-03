@@ -66,13 +66,15 @@ export class ProductsService {
     if (isUUID(term)) {
       product = await this.productRepository.findOneBy({ id: term });
     } else {
-      const queryBuilder = this.productRepository.createQueryBuilder();
+      //en los parentesis va un alias de la tabla
+      const queryBuilder = this.productRepository.createQueryBuilder('prod');
       product = await queryBuilder
         //? los ':' del primer parametro del where deben estar junto al parametro no se puede colocar : parametro
         .where(`UPPER(title) = :title or slug = :slug`, {
           title: term.toUpperCase(),
           slug: term.toLocaleLowerCase(),
         })
+        .leftJoinAndSelect('product.images', 'prodImages') //se usa en QueryBuilder para cargar las relaciones
         .getOne();
     }
     if (!product) {
