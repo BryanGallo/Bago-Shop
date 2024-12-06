@@ -23,7 +23,7 @@ export class ProductsService {
     @InjectRepository(ProductImage)
     private readonly productImageRepository: Repository<ProductImage>,
 
-    private readonly dataSource:DataSource
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(createProductDto: CreateProductDto) {
@@ -89,7 +89,7 @@ export class ProductsService {
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     const { images, ...toUpdate } = updateProductDto;
-    
+
     const product = await this.productRepository.preload({
       id,
       ...toUpdate,
@@ -99,8 +99,27 @@ export class ProductsService {
         `El producto con el siguiente id: ${id} no existe `,
       );
     }
+    //Creando query runner
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     try {
-      await this.productRepository.save(product);
+      if (images) {
+        await queryRunner.manager.delete(ProductImage, { product: { id } });
+
+        product.images = images.map(
+          (image) => (this, this.productImageRepository.create({ url: image })),
+        );
+      } else {
+      }
+
+      await queryRunner.manager.save(product);
+
+      // await this.productRepository.save(product);
+      await queryRunner.commitTransaction();
+      await queryRunner.release();
+
       return product;
     } catch (error) {
       this.handleDBException(error);
