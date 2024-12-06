@@ -6,11 +6,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { DataSource, Repository } from 'typeorm';
+import { validate as isUUID } from 'uuid';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { PaginationDto } from 'src/common/dtos/pagination.dto';
-import { validate as isUUID } from 'uuid';
 import { Product, ProductImage } from './entities';
 
 @Injectable()
@@ -22,6 +22,8 @@ export class ProductsService {
     private readonly productRepository: Repository<Product>,
     @InjectRepository(ProductImage)
     private readonly productImageRepository: Repository<ProductImage>,
+
+    private readonly dataSource:DataSource
   ) {}
 
   async create(createProductDto: CreateProductDto) {
@@ -91,7 +93,6 @@ export class ProductsService {
     const product = await this.productRepository.preload({
       id,
       ...toUpdate,
-      images: [],
     });
     if (!product) {
       throw new NotFoundException(
