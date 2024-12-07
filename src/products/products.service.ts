@@ -106,22 +106,27 @@ export class ProductsService {
 
     try {
       if (images) {
+        //podriamos usar el this.productRepository.delete(id) pero vamos a continuar
+        // el proceso con queryRunner
         await queryRunner.manager.delete(ProductImage, { product: { id } });
 
         product.images = images.map(
-          (image) => (this, this.productImageRepository.create({ url: image })),
+          (image) => (this.productImageRepository.create({ url: image })),
         );
-      } else {
       }
 
       await queryRunner.manager.save(product);
 
       // await this.productRepository.save(product);
       await queryRunner.commitTransaction();
+      //recuerda que hasta se realice un commitTransaction no hemos afectado a la base
       await queryRunner.release();
 
       return product;
     } catch (error) {
+      // revierte los cambios en la base de datos
+      await queryRunner.rollbackTransaction();
+      await queryRunner.release();
       this.handleDBException(error);
     }
   }
