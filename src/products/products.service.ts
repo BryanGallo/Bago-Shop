@@ -110,8 +110,8 @@ export class ProductsService {
         // el proceso con queryRunner
         await queryRunner.manager.delete(ProductImage, { product: { id } });
 
-        product.images = images.map(
-          (image) => (this.productImageRepository.create({ url: image })),
+        product.images = images.map((image) =>
+          this.productImageRepository.create({ url: image }),
         );
       }
 
@@ -142,6 +142,15 @@ export class ProductsService {
     return {
       msg: `El producto con el siguiente #${id} fue eliminado correctamente`,
     };
+  }
+
+  async deleteAllProducts() {
+    const query = this.productRepository.createQueryBuilder('product');
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDBException(error);
+    }
   }
 
   private handleDBException(error: any) {
