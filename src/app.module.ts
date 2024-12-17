@@ -17,6 +17,7 @@ import { SeedModule } from './seed/seed.module';
       password: process.env.DB_PASSWORD,
       autoLoadEntities: true, //
       synchronize: true,// en produccion no colocarlo en true ya que sincroniza apenas se haga algo
+      // logging: true,
     }),
     ProductsModule,
     CommonModule,
